@@ -22,15 +22,6 @@ pipeline {
                 echo 'Tests completed.'
             }
         }
-        stage('Run Application') {
-            steps {
-                echo 'Starting the application...'
-                script {
-                    sh 'node app.js &' // Run the app in the background
-                }
-                echo 'Application is running.'
-            }
-        }
         stage('Deploy to Elastic Beanstalk') {
             steps {
                 echo 'Deploying to Elastic Beanstalk...'
@@ -45,6 +36,11 @@ pipeline {
         }
         failure {
             echo 'Pipeline failed!'
+            // Optionally, print more debug info
+            script {
+                sh 'docker ps -a'
+                sh 'docker images'
+            }
         }
     }
 }

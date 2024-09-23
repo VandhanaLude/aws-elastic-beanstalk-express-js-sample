@@ -1,32 +1,34 @@
 pipeline {
-    agent {
-        docker {
-            image 'node:16'
-            args '-u root:root'
-        }
+    agent any
+    environment {
+        DOCKER_HOST = "tcp://dind:2375"  // Use Docker daemon from the DinD container
     }
     stages {
         stage('Install Dependencies') {
             steps {
                 echo 'Starting dependency installation...'
-                script {
-                    sh 'npm install --save'
-                }
+                sh 'npm install --save'
                 echo 'Dependencies installed successfully.'
             }
         }
-        stage('Run Tests') {
+        stage('Build Docker Image') {
             steps {
-                echo 'Running tests...'
-                // Example: sh 'npm test'
-                echo 'Tests completed.'
+                echo 'Building Docker image...'
+                script {
+                    // Build the Docker image for the Node.js app using the Docker daemon in DinD
+                    sh 'docker build -t my-node-app:latest .'
+                }
+                echo 'Docker image built successfully.'
             }
         }
-        stage('Deploy to Elastic Beanstalk') {
+        stage('Run Docker Container') {
             steps {
-                echo 'Deploying to Elastic Beanstalk...'
-                // Example: sh 'eb deploy'
-                echo 'Deployment completed.'
+                echo 'Running Docker container...'
+                script {
+                    // Run the Docker container using the Docker daemon from DinD
+                    sh 'docker run -d -p 3000:3000 --name my-node-app my-node-app:latest'
+                }
+                echo 'Docker container deployed successfully.'
             }
         }
     }
@@ -36,7 +38,6 @@ pipeline {
         }
         failure {
             echo 'Pipeline failed!'
-            // Optionally, print more debug info
             script {
                 sh 'docker ps -a'
                 sh 'docker images'

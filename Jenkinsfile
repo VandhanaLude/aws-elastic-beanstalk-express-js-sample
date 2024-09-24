@@ -28,7 +28,7 @@ pipeline {
                         snykInstallation: 'snyk@latest',
                         snykTokenId: 'snyk-api-token', // Use the ID of your Snyk API token from Jenkins credentials
                         failOnError: false, // Set to false to not fail the build if Snyk fails to scan
-                        monitorProjectOnBuild: true, // Monitor project dependencies on each build
+                        monitorProjectOnBuild: false, // Monitor project dependencies on each build
                         projectName: '21322895-Project2', // Optional: specify a custom project name
                         targetFile: 'package.json', // Optional: specify the path to the manifest file
                         severity: 'high' // Optional: specify minimum severity to detect

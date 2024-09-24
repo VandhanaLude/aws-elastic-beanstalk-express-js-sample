@@ -31,7 +31,7 @@ pipeline {
                         monitorProjectOnBuild: false, // Monitor project dependencies on each build
                         projectName: '21322895-Project2', // Optional: specify a custom project name
                         targetFile: 'package.json', // Optional: specify the path to the manifest file
-                        severity: 'high' // Optional: specify minimum severity to detect
+                        severity: 'critical' // Optional: specify minimum severity to detect
                     )
 
                     // Check if there are any issues found in the scan

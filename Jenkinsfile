@@ -1,8 +1,6 @@
 pipeline {
     agent any
-    environment {
-        DOCKER_HOST = "tcp://dind:2375"  // Use Docker daemon from the DinD container
-    }
+
     stages {
         stage('Install Dependencies') {
             steps {
@@ -19,6 +17,36 @@ pipeline {
                     sh 'docker build -t my-node-app:latest .'
                 }
                 echo 'Docker image built successfully.'
+            }
+        }
+        stage('Snyk Security Scan') {
+            steps {
+                echo 'Running Snyk security scan...'
+                script {
+                    // Execute the Snyk security scan
+                    def snykScanResult = snykSecurity(
+                        snykInstallation: 'snyk@latest',
+                        snykTokenId: 'snyk-api-token', // Use the ID of your Snyk API token from Jenkins credentials
+                        failOnError: true, // Fail the build if Snyk fails to scan
+                        monitorProjectOnBuild: true, // Monitor project dependencies on each build
+                        organization: 'Curtin University', // Optional: specify your Snyk organization
+                        projectName: '21322895-Project2', // Optional: specify a custom project name
+                        targetFile: 'package.json', // Optional: specify the path to the manifest file
+                        severity: 'critical' // Optional: specify minimum severity to detect
+                    )
+
+                    // Check if there are any issues found in the scan
+                    if (snykScanResult.get('issues') > 0) {
+                        // Print the issues found
+                        echo "Snyk found vulnerabilities:"
+                        snykScanResult.get('issues').each { issue ->
+                            echo " - ${issue.title}: ${issue.severity} severity"
+                        }
+                    } else {
+                        echo "No vulnerabilities found."
+                    }
+                }
+                echo 'Snyk scan completed.'
             }
         }
         stage('Run Docker Container') {

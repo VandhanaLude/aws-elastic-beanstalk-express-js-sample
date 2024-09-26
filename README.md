@@ -22,20 +22,20 @@ The following `Jenkinsfile` is used to define a CI/CD pipeline for the Node.js s
 ### Pipeline Overview
 The Jenkinsfile defines the following stages:
 
-**Install Dependencies:**
+-- **Install Dependencies:**
 Installs the necessary Node.js dependencies using npm install --save.
 Verifies that dependencies are successfully installed.
-**Build Docker Image:**
+-- **Build Docker Image:**
 Builds a Docker image for the Node.js application with the latest tag.
 The image is created from the Dockerfile present in the root of the project.
-**Snyk Security Scan:**
+-- **Snyk Security Scan:**
 Runs a Snyk scan to detect security vulnerabilities in the project dependencies.
 If any vulnerabilities are found, the issues are printed in the Jenkins console log, categorized by severity.
-**Run Docker Container:**
+-- **Run Docker Container:**
 Checks if a Docker container named my-node-app is already running.
 If the container exists but is stopped, it will be started.
 If the container doesn’t exist, a new one will be created and started, exposing port 3000.
-**Post-Pipeline Actions:**
+-- **Post-Pipeline Actions:**
 On success, the pipeline logs a success message.
 On failure, it logs failure details and prints a list of Docker containers and images for debugging purposes.
 
